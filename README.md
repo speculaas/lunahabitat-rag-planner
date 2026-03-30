@@ -103,3 +103,13 @@ Confidence Level: `★★★★☆`
 ## Demo
 
 Add pets, create tasks, and click `Generate schedule` to see the sorted daily plan and any conflict warnings. The seeded demo data includes brown bears named Kodiak and Maple to keep the assignment a little more memorable without changing the required architecture.
+
+<img width="901" height="770" alt="image" src="https://github.com/user-attachments/assets/48c41ad7-9957-4a14-96d0-d455c2e1c141" />
+<img width="1063" height="863" alt="image" src="https://github.com/user-attachments/assets/d62df43b-09d6-4154-9708-f7cd6172c2ad" />
+<img width="782" height="695" alt="image" src="https://github.com/user-attachments/assets/ff25d3b0-e875-4c9f-add2-b1a8c35f762a" />
+<img width="762" height="774" alt="image" src="https://github.com/user-attachments/assets/4d62940b-5ee4-4fc1-bccb-905cffbecf94" />
+
+
+
+
+
