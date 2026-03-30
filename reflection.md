@@ -4,13 +4,11 @@
 
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+My initial UML used four classes: `Owner`, `Pet`, `Task`, and `Scheduler`. `Owner` stores the person's name, time budget, preferences, and list of pets. `Pet` stores basic pet details plus the tasks assigned to that pet. `Task` stores the actual work item, including time, duration, priority, recurrence, due date, and completion state. `Scheduler` acts as the planning layer that gathers tasks from the owner's pets, sorts them, checks for conflicts, and builds a daily plan.
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Yes. During implementation I added `due_date` and `frequency` directly to `Task` so recurring scheduling would stay simple and each task instance could represent one specific day. I also kept the scheduler lightweight by using exact time matches for conflict detection instead of trying to model overlapping time ranges, which felt cleaner for this project scope.
 
 ---
 
@@ -18,13 +16,11 @@
 
 **a. Constraints and priorities**
 
-- What constraints does your scheduler consider (for example: time, priority, preferences)?
-- How did you decide which constraints mattered most?
+My scheduler considers the owner's daily time budget, each task's scheduled time, each task's priority, and whether the task is already completed. Time budget mattered most because a plan should be realistic before it is optimized. After that, time ordering and priority mattered because the user needs a schedule they can follow and understand quickly.
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+One tradeoff is that conflict detection only checks whether two tasks start at the exact same time. It does not try to calculate overlapping durations. That is reasonable here because it keeps the logic readable for a student project while still catching the clearest scheduling mistakes.
 
 ---
 
@@ -32,13 +28,11 @@
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+I used AI to move through the project in stages: first for class design, then for implementation ideas, then for test coverage and UI integration. The most helpful prompts were specific prompts tied to files or behaviors, such as asking how a scheduler should retrieve tasks from pets, how to sort `"HH:MM"` times cleanly, and what edge cases mattered most for recurring tasks and conflicts.
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+I did not blindly accept the idea of making the scheduler much more complex with overlapping-duration conflict checks and heavier optimization logic. I simplified that suggestion because it would have added more code than the assignment needed. I verified the final design by reading through the flow myself, running the CLI demo, and checking the automated tests.
 
 ---
 
@@ -46,13 +40,11 @@
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+I tested five core behaviors: marking a task complete, adding a task to a pet, sorting tasks chronologically, creating the next task for a daily recurring item, and flagging duplicate-time conflicts. These were important because they covered the most visible interactions between my classes and the scheduler's algorithmic features.
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+I feel fairly confident that the scheduler works correctly for the main project scenarios because the core behaviors pass automated tests and the app uses the same backend logic as the CLI demo. If I had more time, I would test invalid time formats, duplicate pet names, weekly recurrence over longer periods, and tasks that almost exceed the time budget.
 
 ---
 
@@ -60,12 +52,12 @@
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+I am most satisfied with keeping the backend and frontend connected through the same class design. Once the data model was clear, the CLI demo, tests, and Streamlit UI all became much easier to build and reason about.
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+In another iteration, I would add editing and deleting tasks in the UI, save data to JSON so the schedule persists between runs, and improve conflict detection so it can catch overlapping task durations instead of only exact time matches.
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+One important takeaway is that AI is most useful when I stay in the lead architect role. It helped me brainstorm and speed up coding, but the quality of the final system depended on me choosing the right level of complexity, verifying the results, and keeping the design aligned with the assignment goals.
