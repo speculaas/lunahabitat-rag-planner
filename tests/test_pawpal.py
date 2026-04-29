@@ -1,6 +1,8 @@
 from datetime import date, timedelta
+from pathlib import Path
 
 from pawpal_system import Owner, Pet, Scheduler, Task
+from retriever import CorpusRetriever
 
 
 def build_scheduler() -> tuple[Scheduler, Pet]:
@@ -8,6 +10,18 @@ def build_scheduler() -> tuple[Scheduler, Pet]:
     pet = Pet(name="Mochi", species="dog")
     owner.add_pet(pet)
     return Scheduler(owner), pet
+
+
+def build_retrieval_scheduler() -> tuple[Scheduler, Pet]:
+    owner = Owner(name="Luna Ops", daily_time_budget=180)
+    resource = Pet(
+        name="Oxygen Recycler",
+        species="life support system",
+        notes="Requires daily diagnostics and pressure checks.",
+    )
+    owner.add_pet(resource)
+    docs_path = Path(__file__).resolve().parents[1] / "data" / "docs"
+    return Scheduler(owner, retriever=CorpusRetriever(docs_path)), resource
 
 
 def test_mark_complete_updates_status() -> None:
@@ -64,3 +78,37 @@ def test_detect_conflicts_flags_duplicate_times() -> None:
 
     assert len(conflicts) == 1
     assert "08:00" in conflicts[0]
+
+
+def test_generate_daily_plan_uses_retrieved_guidance_in_reason() -> None:
+    scheduler, resource = build_retrieval_scheduler()
+    today = date.today()
+    resource.add_task(Task("Oxygen recycler diagnostics", "08:00", 20, "high", due_date=today))
+
+    plan = scheduler.generate_daily_plan(today)
+
+    assert len(plan) == 1
+    assert "retrieved guidance from Oxygen Recycler Checks" in plan[0]["reason"]
+    assert plan[0]["citation"] == "Oxygen Recycler Checks"
+    assert plan[0]["guidance_warning"] == ""
+
+
+def test_generate_daily_plan_warns_when_no_guidance_matches() -> None:
+    owner = Owner(name="Luna Ops", daily_time_budget=180)
+    resource = Pet(
+        name="Art Bay",
+        species="creative workspace",
+        notes="Used for morale projects and non-operational decoration.",
+    )
+    owner.add_pet(resource)
+    today = date.today()
+    docs_path = Path(__file__).resolve().parents[1] / "data" / "docs"
+    scheduler = Scheduler(owner, retriever=CorpusRetriever(docs_path))
+    resource.add_task(Task("Art mural touch-up", "10:00", 15, "low", due_date=today))
+
+    plan = scheduler.generate_daily_plan(today)
+
+    assert len(plan) == 1
+    assert plan[0]["citation"] == "No matching guidance"
+    assert "no matching local guidance was retrieved" in plan[0]["reason"].lower()
+    assert "Treat this schedule item as uncertain" in plan[0]["guidance_warning"]

@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 
+from retriever import CorpusRetriever
+
 
 PRIORITY_ORDER = {"high": 0, "medium": 1, "low": 2}
 
@@ -114,9 +116,10 @@ class Owner:
 class Scheduler:
     """Builds and explains a daily pet care plan."""
 
-    def __init__(self, owner: Owner) -> None:
+    def __init__(self, owner: Owner, retriever: CorpusRetriever | None = None) -> None:
         """Store the owner whose pets will be scheduled."""
         self.owner = owner
+        self.retriever = retriever
 
     def sort_tasks(self, task_pairs: list[tuple[Pet, Task]]) -> list[tuple[Pet, Task]]:
         """Order tasks by time and then by priority."""
@@ -170,10 +173,23 @@ class Scheduler:
         for pet, task in scheduled:
             if task.duration_minutes > remaining:
                 continue
-            explanation = (
-                f"Scheduled because {pet.name} needs {task.title.lower()} at {task.time} "
-                f"and it is marked {task.priority} priority."
-            )
+            guidance = self._retrieve_guidance(pet, task)
+            guidance_title = guidance[0].title if guidance else "No matching guidance"
+            guidance_warning = ""
+            if guidance:
+                explanation = (
+                    f"Scheduled because {pet.name} needs {task.title.lower()} at {task.time} "
+                    f"and retrieved guidance from {guidance_title} supports this {task.priority} priority task."
+                )
+            else:
+                guidance_warning = (
+                    "No matching guidance found in the local corpus. "
+                    "Treat this schedule item as uncertain until reviewed."
+                )
+                explanation = (
+                    f"Scheduled because {pet.name} needs {task.title.lower()} at {task.time}, "
+                    f"but no matching local guidance was retrieved."
+                )
             plan.append(
                 {
                     "pet": pet.name,
@@ -182,11 +198,20 @@ class Scheduler:
                     "duration_minutes": task.duration_minutes,
                     "priority": task.priority,
                     "reason": explanation,
+                    "citation": guidance_title,
+                    "guidance_warning": guidance_warning,
                 }
             )
             remaining -= task.duration_minutes
 
         return plan
+
+    def _retrieve_guidance(self, pet: Pet, task: Task):
+        """Find guidance chunks relevant to the current resource and task."""
+        if self.retriever is None:
+            return []
+        query = " ".join([pet.name, pet.species, pet.notes, task.title])
+        return self.retriever.retrieve(query)
 
     def mark_task_complete(self, pet_name: str, task_title: str, target_day: date | None = None) -> Task | None:
         """Complete a task and spawn the next recurring instance when needed."""

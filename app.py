@@ -1,8 +1,10 @@
 from datetime import date, timedelta
+from pathlib import Path
 
 import streamlit as st
 
 from pawpal_system import Owner, Pet, Scheduler, Task
+from retriever import CorpusRetriever
 
 
 st.set_page_config(page_title="LunaHabitat Planner", page_icon="🌕", layout="centered")
@@ -28,9 +30,12 @@ def seed_demo_data() -> Owner:
 
 if "owner" not in st.session_state:
     st.session_state.owner = seed_demo_data()
+if "retriever" not in st.session_state:
+    docs_path = Path(__file__).resolve().parent / "data" / "docs"
+    st.session_state.retriever = CorpusRetriever(docs_path)
 
 owner: Owner = st.session_state.owner
-scheduler = Scheduler(owner)
+scheduler = Scheduler(owner, retriever=st.session_state.retriever)
 today = date.today()
 
 st.title("🌕 LunaHabitat Planner")
@@ -148,6 +153,9 @@ if st.button("Generate schedule"):
         st.table(plan)
         for item in plan:
             st.caption(f"{item['time']} - {item['reason']}")
+            st.caption(f"Citation: {item['citation']}")
+            if item["guidance_warning"]:
+                st.warning(item["guidance_warning"])
 
     if conflicts:
         for warning in conflicts:

@@ -1,6 +1,8 @@
 from datetime import date, timedelta
+from pathlib import Path
 
 from pawpal_system import Owner, Pet, Scheduler, Task
+from retriever import CorpusRetriever
 
 
 def build_demo_owner() -> Owner:
@@ -29,7 +31,8 @@ def build_demo_owner() -> Owner:
 def print_schedule() -> None:
     """Display the current mission schedule in a readable terminal format."""
     owner = build_demo_owner()
-    scheduler = Scheduler(owner)
+    docs_path = Path(__file__).resolve().parent / "data" / "docs"
+    scheduler = Scheduler(owner, retriever=CorpusRetriever(docs_path))
     today = date.today()
     plan = scheduler.generate_daily_plan(today)
     conflicts = scheduler.detect_conflicts(today)
@@ -42,6 +45,9 @@ def print_schedule() -> None:
             f"{item['duration_minutes']:>3} min | {item['priority']}"
         )
         print(f"      Why: {item['reason']}")
+        print(f"      Citation: {item['citation']}")
+        if item["guidance_warning"]:
+            print(f"      Warning: {item['guidance_warning']}")
     if conflicts:
         print("\nWarnings")
         print("-" * 60)
