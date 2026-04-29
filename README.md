@@ -208,10 +208,6 @@ Loom walkthrough (continued):
 
 - [LunaHabitat Planner Walkthrough 2](https://www.loom.com/share/eac4ab325b474cb3aa946e59da0a4990)
 
-### Screenshot Placeholders
-
-Replace the placeholder URLs below with your uploaded GitHub image links or screenshot asset paths.
-
 **1. Scenario A: Oxygen guidance match**
 
 Caption: The planner retrieves `Oxygen Recycler Checks` for a life-support task and produces a citation-backed explanation without an uncertainty warning.
