@@ -198,6 +198,16 @@ This project showed that even a lightweight retrieval pipeline can make a planne
 
 Place your rendered architecture image and any screenshots in `assets/`.
 
+### Video Walkthrough
+
+Primary Loom walkthrough:
+
+- [LunaHabitat Planner Walkthrough 1](https://www.loom.com/share/e27816fdca854d9b88aaabb5919aeb5f)
+
+Alternate Loom walkthrough:
+
+- [LunaHabitat Planner Walkthrough 2](https://www.loom.com/share/eac4ab325b474cb3aa946e59da0a4990)
+
 ### Screenshot Placeholders
 
 Replace the placeholder URLs below with your uploaded GitHub image links or screenshot asset paths.
