@@ -29,7 +29,25 @@ The system has five main parts:
 - `Corpus`: curated lunar habitat guidance documents under `data/docs/`
 - `Evaluator`: scenario-based checks for citation behavior and uncertainty guardrails
 
-Mermaid source for the architecture diagram is provided in [assets/architecture-diagram.mmd](/Users/watney/git/zimmnotes/chat/codepath/ai110/w8/lunahabitat-rag-planner/assets/architecture-diagram.mmd).
+```mermaid
+flowchart LR
+    A["User Input<br/>resource + task + constraints"] --> B["Streamlit UI / CLI"]
+    B --> C["Scheduler"]
+    C --> D["Retriever"]
+    D --> E["Local Corpus<br/>data/docs/*.md"]
+    E --> D
+    D --> F["Retrieved Guidance Chunk(s)"]
+    F --> C
+    C --> G["Plan Item + Explanation + Citation"]
+    C --> H["Uncertainty Warning<br/>if no guidance matches"]
+    G --> I["User Output"]
+    H --> I
+    I --> J["Human Review / Demo"]
+    C --> K["evaluate_planner.py"]
+    K --> L["Pass/Fail Summary"]
+```
+
+The Mermaid source for the architecture diagram is also provided in [assets/architecture-diagram.mmd](assets/architecture-diagram.mmd).
 
 ## Features
 
@@ -163,7 +181,7 @@ The system currently improves reliability by:
 - exposing citations for retrieved guidance
 - warning when no guidance matches
 
-More detail is documented in [guardrails-summary.md](/Users/watney/git/zimmnotes/chat/codepath/ai110/w8/lunahabitat-rag-planner/guardrails-summary.md).
+More detail is documented in [guardrails-summary.md](guardrails-summary.md).
 
 ## Limitations
 
@@ -188,31 +206,33 @@ Replace the placeholder URLs below with your uploaded GitHub image links or scre
 
 Caption: The planner retrieves `Oxygen Recycler Checks` for a life-support task and produces a citation-backed explanation without an uncertainty warning.
 
-<img width="787" height="790" alt="image" src="https://github.com/user-attachments/assets/1b5997a3-5763-433b-8f6b-3681194f7a30" />
-<img width="749" height="247" alt="image" src="https://github.com/user-attachments/assets/d3f3a3c5-778b-4d95-8a52-fe91400b9802" />
+| Scenario A Demo Panel |
+| --- |
+| <img width="787" height="790" alt="Scenario A setup" src="https://github.com/user-attachments/assets/1b5997a3-5763-433b-8f6b-3681194f7a30" /><br><br><img width="749" height="247" alt="Scenario A result" src="https://github.com/user-attachments/assets/d3f3a3c5-778b-4d95-8a52-fe91400b9802" /> |
 
 
 **2. Scenario B: Construction guidance match**
 
 Caption: The planner retrieves `Construction Zone Safety` for a construction-related task, showing that different task types pull different supporting documents.
 
-<img width="738" height="316" alt="image" src="https://github.com/user-attachments/assets/d65fcfd2-d33a-4d36-8c65-90f1afe0087a" />
-<img width="800" height="440" alt="image" src="https://github.com/user-attachments/assets/cc8c20da-8c20-4f4e-a6af-2b14fd294382" />
+| Scenario B Demo Panel |
+| --- |
+| <img width="738" height="316" alt="Scenario B setup" src="https://github.com/user-attachments/assets/d65fcfd2-d33a-4d36-8c65-90f1afe0087a" /><br><br><img width="800" height="440" alt="Scenario B result" src="https://github.com/user-attachments/assets/cc8c20da-8c20-4f4e-a6af-2b14fd294382" /> |
 
 
 **3. Scenario C: Uncertainty guardrail**
 
 Caption: When a task does not match the local corpus, the planner returns `No matching guidance` and shows an uncertainty warning for manual review.
 
-<img width="741" height="507" alt="image" src="https://github.com/user-attachments/assets/80f175d9-022f-406e-82b3-3947b2cacc28" />
-<img width="815" height="343" alt="image" src="https://github.com/user-attachments/assets/6850b769-62c4-4d4a-8ef0-f042fea90584" />
-<img width="824" height="379" alt="image" src="https://github.com/user-attachments/assets/8d417dd6-f252-4395-9e37-dd4627b5e8f3" />
-<img width="770" height="369" alt="image" src="https://github.com/user-attachments/assets/a2f3559c-2538-4d53-b2e1-4d089320e2aa" />
+| Scenario C Demo Panel |
+| --- |
+| <img width="741" height="507" alt="Scenario C setup 1" src="https://github.com/user-attachments/assets/80f175d9-022f-406e-82b3-3947b2cacc28" /><br><br><img width="815" height="343" alt="Scenario C setup 2" src="https://github.com/user-attachments/assets/6850b769-62c4-4d4a-8ef0-f042fea90584" /><br><br><img width="824" height="379" alt="Scenario C setup 3" src="https://github.com/user-attachments/assets/8d417dd6-f252-4395-9e37-dd4627b5e8f3" /><br><br><img width="770" height="369" alt="Scenario C result" src="https://github.com/user-attachments/assets/a2f3559c-2538-4d53-b2e1-4d089320e2aa" /> |
 
 
 **4. Evaluation script result**
 
 Caption: The scenario-based evaluator reports `4/4` cases passed, covering guidance matches and the missing-guidance guardrail.
 
-<img width="517" height="363" alt="image" src="https://github.com/user-attachments/assets/ad0c3291-d6bc-45cc-9075-8b8abc9c4c52" />
-
+| Evaluation Demo Panel |
+| --- |
+| <img width="517" height="363" alt="Evaluation result" src="https://github.com/user-attachments/assets/ad0c3291-d6bc-45cc-9075-8b8abc9c4c52" /> |
