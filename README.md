@@ -188,13 +188,17 @@ Replace the placeholder URLs below with your uploaded GitHub image links or scre
 
 Caption: The planner retrieves `Oxygen Recycler Checks` for a life-support task and produces a citation-backed explanation without an uncertainty warning.
 
-![Scenario A screenshot](REPLACE_WITH_GITHUB_IMAGE_URL_FOR_SCENARIO_A)
+<img width="787" height="790" alt="image" src="https://github.com/user-attachments/assets/1b5997a3-5763-433b-8f6b-3681194f7a30" />
+<img width="749" height="247" alt="image" src="https://github.com/user-attachments/assets/d3f3a3c5-778b-4d95-8a52-fe91400b9802" />
+
 
 **2. Scenario B: Construction guidance match**
 
 Caption: The planner retrieves `Construction Zone Safety` for a construction-related task, showing that different task types pull different supporting documents.
 
-![Scenario B screenshot](REPLACE_WITH_GITHUB_IMAGE_URL_FOR_SCENARIO_B)
+<img width="738" height="316" alt="image" src="https://github.com/user-attachments/assets/d65fcfd2-d33a-4d36-8c65-90f1afe0087a" />
+<img width="800" height="440" alt="image" src="https://github.com/user-attachments/assets/cc8c20da-8c20-4f4e-a6af-2b14fd294382" />
+
 
 **3. Scenario C: Uncertainty guardrail**
 
