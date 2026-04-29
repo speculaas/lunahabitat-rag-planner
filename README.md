@@ -200,11 +200,11 @@ Place your rendered architecture image and any screenshots in `assets/`.
 
 ### Video Walkthrough
 
-Primary Loom walkthrough:
+Loom walkthrough:
 
 - [LunaHabitat Planner Walkthrough 1](https://www.loom.com/share/e27816fdca854d9b88aaabb5919aeb5f)
 
-Alternate Loom walkthrough:
+Loom walkthrough (continued):
 
 - [LunaHabitat Planner Walkthrough 2](https://www.loom.com/share/eac4ab325b474cb3aa946e59da0a4990)
 
