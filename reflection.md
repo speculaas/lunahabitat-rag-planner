@@ -1,4 +1,4 @@
-# PawPal+ Project Reflection
+# LunaHabitat Planner Project Reflection
 
 ## 1. System Design
 

@@ -5,24 +5,24 @@ import streamlit as st
 from pawpal_system import Owner, Pet, Scheduler, Task
 
 
-st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
+st.set_page_config(page_title="LunaHabitat Planner", page_icon="🌕", layout="centered")
 
 
 def seed_demo_data() -> Owner:
-    """Create a themed starter dataset for the app session."""
+    """Create a starter lunar-habitat dataset for the app session."""
     owner = Owner(
-        name="Goldie",
-        daily_time_budget=120,
-        preferences=["prefer outdoor tasks before noon", "keep evenings short"],
+        name="Luna Ops",
+        daily_time_budget=180,
+        preferences=["prioritize life-support checks before expansion work", "keep comms windows visible in the afternoon"],
     )
-    kodiak = Pet("Kodiak", "brown bear", age=5, notes="Enjoys glacier air and berry snacks.")
-    maple = Pet("Maple", "brown bear", age=3, notes="Best with calm routines.")
+    oxygen = Pet("Oxygen Recycler", "life support system", age=5, notes="Requires daily inspection before non-critical work.")
+    greenhouse = Pet("Greenhouse Pod", "food systems module", age=3, notes="Best checked after environmental systems stabilize.")
     today = date.today()
-    kodiak.add_task(Task("River walk", "07:30", 30, "high", "daily", today))
-    kodiak.add_task(Task("Berry breakfast", "08:00", 15, "high", "daily", today))
-    maple.add_task(Task("Salmon enrichment", "09:15", 20, "medium", "weekly", today))
-    owner.add_pet(kodiak)
-    owner.add_pet(maple)
+    oxygen.add_task(Task("Pressure seal inspection", "07:30", 30, "high", "daily", today))
+    oxygen.add_task(Task("Oxygen recycler diagnostics", "08:15", 25, "high", "daily", today))
+    greenhouse.add_task(Task("Greenhouse moisture scan", "09:15", 20, "medium", "weekly", today))
+    owner.add_pet(oxygen)
+    owner.add_pet(greenhouse)
     return owner
 
 
@@ -33,24 +33,24 @@ owner: Owner = st.session_state.owner
 scheduler = Scheduler(owner)
 today = date.today()
 
-st.title("🐾 PawPal+")
-st.caption("A cozy pet care planner with a modern Goldilocks twist for Alaska's brown bears.")
+st.title("🌕 LunaHabitat Planner")
+st.caption("A lunar habitat operations planner for maintenance, expansion, monitoring, and communications work.")
 
 with st.expander("Scenario", expanded=False):
     st.markdown(
         """
-PawPal+ helps a pet owner organize daily care tasks by time, priority, and available minutes.
-This version demonstrates the same scheduling logic in both the CLI and Streamlit UI.
+LunaHabitat Planner helps a habitat operator organize mission work by time, priority, and available crew minutes.
+This first reframe keeps the inherited scheduler logic while preparing the project for later RAG integration.
 """
     )
 
-st.subheader("Owner Profile")
+st.subheader("Operator Profile")
 col1, col2 = st.columns(2)
 with col1:
-    owner.name = st.text_input("Owner name", value=owner.name)
+    owner.name = st.text_input("Operator name", value=owner.name)
 with col2:
     owner.daily_time_budget = st.number_input(
-        "Daily time budget (minutes)",
+        "Daily crew time budget (minutes)",
         min_value=30,
         max_value=600,
         value=owner.daily_time_budget,
@@ -59,34 +59,34 @@ with col2:
 
 st.divider()
 
-st.subheader("Add a Pet")
-pet_name = st.text_input("Pet name", value="Juneau")
-species = st.text_input("Species", value="brown bear")
-pet_age = st.number_input("Age", min_value=0, max_value=40, value=4)
-pet_notes = st.text_input("Notes", value="Needs a just-right mix of movement and rest.")
+st.subheader("Add a Habitat Resource")
+pet_name = st.text_input("Resource name", value="Comms Array")
+species = st.text_input("Resource type", value="communications system")
+pet_age = st.number_input("Service age", min_value=0, max_value=40, value=4)
+pet_notes = st.text_input("Notes", value="Supports scheduled uplinks and relay checks.")
 
-if st.button("Add pet"):
+if st.button("Add resource"):
     existing_pet = owner.find_pet(pet_name)
     if existing_pet is not None:
-        st.info(f"{pet_name} is already in your PawPal+ list.")
+        st.info(f"{pet_name} is already in the habitat operations list.")
     else:
         owner.add_pet(Pet(pet_name, species, int(pet_age), pet_notes))
-        st.success(f"Added {pet_name} to {owner.name}'s care plan.")
+        st.success(f"Added {pet_name} to {owner.name}'s operations board.")
 
 pet_options = [pet.name for pet in owner.pets]
 
 st.divider()
 
-st.subheader("Schedule a Task")
+st.subheader("Schedule an Operations Task")
 if pet_options:
-    task_pet = st.selectbox("Choose a pet", pet_options)
+    task_pet = st.selectbox("Choose a resource", pet_options)
 else:
     task_pet = ""
-    st.warning("Add a pet before scheduling tasks.")
+    st.warning("Add a resource before scheduling tasks.")
 
 col1, col2 = st.columns(2)
 with col1:
-    task_title = st.text_input("Task title", value="Porridge check")
+    task_title = st.text_input("Task title", value="Comms uplink review")
     task_time = st.text_input("Time (HH:MM)", value="10:00")
     frequency = st.selectbox("Frequency", ["once", "daily", "weekly"])
 with col2:
@@ -97,7 +97,7 @@ with col2:
 if st.button("Add task"):
     pet = owner.find_pet(task_pet)
     if pet is None:
-        st.error("Select a valid pet before adding a task.")
+        st.error("Select a valid resource before adding a task.")
     else:
         due_date = today if task_day == "Today" else today + timedelta(days=1)
         try:
@@ -117,11 +117,11 @@ if st.button("Add task"):
 
 current_tasks = scheduler.sort_tasks(owner.all_tasks_for_day(today))
 if current_tasks:
-    st.markdown("### Today's Tasks")
+    st.markdown("### Today's Operations Queue")
     st.table(
         [
             {
-                "Pet": pet.name,
+                "Resource": pet.name,
                 "Task": task.title,
                 "Time": task.time,
                 "Minutes": task.duration_minutes,
@@ -132,19 +132,19 @@ if current_tasks:
         ]
     )
 else:
-    st.info("No tasks scheduled for today yet.")
+    st.info("No operations tasks scheduled for today yet.")
 
 st.divider()
 
-st.subheader("Today's Schedule")
+st.subheader("Today's Mission Schedule")
 if st.button("Generate schedule"):
     plan = scheduler.generate_daily_plan(today)
     conflicts = scheduler.detect_conflicts(today)
 
     if not plan:
-        st.warning("No tasks fit inside today's time budget.")
+        st.warning("No tasks fit inside today's crew time budget.")
     else:
-        st.success("Schedule generated.")
+        st.success("Mission schedule generated.")
         st.table(plan)
         for item in plan:
             st.caption(f"{item['time']} - {item['reason']}")
