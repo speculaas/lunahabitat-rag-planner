@@ -45,7 +45,7 @@ with st.expander("Scenario", expanded=False):
     st.markdown(
         """
 LunaHabitat Planner helps a habitat operator organize mission work by time, priority, and available crew minutes.
-This first reframe keeps the inherited scheduler logic while preparing the project for later RAG integration.
+It retrieves local guidance before writing schedule explanations and warns when no relevant guidance is found.
 """
     )
 

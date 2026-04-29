@@ -1,0 +1,15 @@
+flowchart LR
+    A["User Input<br/>resource + task + constraints"] --> B["Streamlit UI / CLI"]
+    B --> C["Scheduler"]
+    C --> D["Retriever"]
+    D --> E["Local Corpus<br/>data/docs/*.md"]
+    E --> D
+    D --> F["Retrieved Guidance Chunk(s)"]
+    F --> C
+    C --> G["Plan Item + Explanation + Citation"]
+    C --> H["Uncertainty Warning<br/>if no guidance matches"]
+    G --> I["User Output"]
+    H --> I
+    I --> J["Human Review / Demo"]
+    C --> K["evaluate_planner.py"]
+    K --> L["Pass/Fail Summary"]

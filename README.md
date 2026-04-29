@@ -1,110 +1,187 @@
 # LunaHabitat Planner
 
-LunaHabitat Planner is a Streamlit mission-operations planner for a lunar habitat. It helps an operator manage habitat tasks, sort them into a daily schedule, and explain why those tasks were chosen under limited crew time.
+LunaHabitat Planner is a retrieval-augmented lunar habitat operations planner. It retrieves local mission guidance documents before generating schedule explanations for maintenance, expansion, monitoring, and communications tasks, and it warns when no supporting guidance is found.
 
-This repository extends **Module 2: PawPal+**. The original project focused on pet-care scheduling with structured tasks, prioritization, conflict detection, and explanations. This final project keeps that scheduler backbone and reframes it around lunar habitat operations as the foundation for later RAG integration.
+This project extends **Module 2: PawPal+**. The original project was a pet-care scheduling system that organized tasks by time, priority, and owner constraints, while also detecting conflicts and explaining why tasks were scheduled. This final project keeps that scheduling backbone and adapts it into a lunar habitat planning system with integrated retrieval and guardrails.
 
-## Commit 1 Scope
+## Why This Project Matters
 
-This first reframe commit focuses on:
+Lunar habitat operations involve limited crew time, overlapping priorities, and safety-sensitive decisions. A planner that can retrieve relevant operational guidance before explaining a schedule is more transparent than a plain rule-based scheduler and easier to evaluate than a free-form chatbot.
 
-- renaming the project around lunar habitat operations
-- updating user-facing app language
-- keeping the existing scheduling backbone intact
-- adding professional project scaffolding for `assets/`, `data/docs/`, and `model_card.md`
+## Current AI Feature
 
-RAG retrieval is not implemented yet in this commit.
+The current AI feature is a lightweight local **RAG pipeline**:
 
-## Current Features
+1. a task and resource are provided to the planner
+2. the retriever searches the local corpus in `data/docs/`
+3. the scheduler uses the retrieved guidance to produce a grounded explanation
+4. the system shows a citation or an uncertainty warning
 
-- Add mission resources and operations tasks from the Streamlit app
-- Store habitat operator, resource, and task data in backend Python classes
-- Generate a daily plan based on time budget, task time, and priority
-- Sort tasks chronologically and filter out completed work
-- Detect same-time conflicts and show warnings in the UI
-- Create the next occurrence automatically for daily and weekly recurring tasks
-- Run a CLI demo through `main.py` to verify the logic outside Streamlit
+This is a non-LLM RAG design. The retrieval is keyword-based and the response text is template-driven, but the retrieved guidance still changes how the application behaves.
 
-## System Design
+## Architecture Overview
 
-The project currently uses the original four scheduling classes:
+The system has five main parts:
 
-- `Owner`: stores the operator's name, available time budget, preferences, and tracked resources
-- `Pet`: currently reused as a generic tracked resource record for modules, systems, or work zones
-- `Task`: stores title, time, duration, priority, frequency, date, and completion state
-- `Scheduler`: sorts tasks, builds plans, flags conflicts, and handles recurring tasks
+- `Streamlit UI / CLI`: collects user input and shows schedules
+- `Scheduler`: sorts and selects tasks under time and priority constraints
+- `Retriever`: searches local guidance documents for relevant chunks
+- `Corpus`: curated lunar habitat guidance documents under `data/docs/`
+- `Evaluator`: scenario-based checks for citation behavior and uncertainty guardrails
 
-This naming will likely be cleaned up in a later refactor, but it is sufficient for the first project-reframing commit.
+Mermaid source for the architecture diagram is provided in [assets/architecture-diagram.mmd](/Users/watney/git/zimmnotes/chat/codepath/ai110/w8/lunahabitat-rag-planner/assets/architecture-diagram.mmd).
 
-## Lunar Habitat Task Categories
+## Features
 
-The app is now framed around these mission task categories:
-
-- maintenance
-- expansion
-- monitoring
-- communications
-
-## Getting Started
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-To preview the backend in the terminal:
-
-```bash
-python main.py
-```
-
-## Testing
-
-Run the automated tests with:
-
-```bash
-python -m pytest
-```
-
-The current test suite still covers the inherited scheduler behavior:
-
-- task completion
-- task addition
-- chronological sorting
-- recurring task creation
-- exact-time conflict detection
-
-## Starter RAG Corpus
-
-The repository now includes a starter local document corpus under `data/docs/` for future retrieval:
-
-- `construction-zone-safety.md`
-- `oxygen-recycler-checks.md`
-- `lunar-comms-windows.md`
-- `crew-time-budget-policy.md`
-- `emergency-response-protocol.md`
-
-These documents contain compact rules, warnings, and scheduling constraints that will be used in the next commit when retrieval is integrated into planning explanations.
-
-## Planned Next Steps
-
-1. Integrate retrieval into planning explanations
-2. Add guardrails and evaluation for retrieval-based planning
-3. Refine the domain model after the first RAG-backed workflow is working
+- Add habitat resources and operations tasks from the Streamlit app
+- Generate a daily mission schedule based on time budget, task time, and priority
+- Retrieve matching local guidance before writing a schedule explanation
+- Show a citation for matched guidance
+- Show an uncertainty warning when no guidance matches
+- Detect same-time conflicts
+- Run a CLI demo through `main.py`
+- Run a scenario-based evaluator through `evaluate_planner.py`
 
 ## Project Structure
 
 ```text
 assets/
 data/
+  corpus-manifest.md
   docs/
-tests/
+evaluate_planner.py
 app.py
 main.py
-pawpal_system.py
 model_card.md
-README.md
+pawpal_system.py
+retriever.py
+tests/
 ```
 
+## Setup Instructions
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Run the app:
+
+```bash
+streamlit run app.py
+```
+
+Run the CLI demo:
+
+```bash
+python3 main.py
+```
+
+Run tests:
+
+```bash
+python3 -m pytest
+```
+
+Run the retrieval evaluation:
+
+```bash
+python3 evaluate_planner.py
+```
+
+## Sample Interactions
+
+### Example 1: Life-support task
+
+Input:
+
+- resource: `Oxygen Recycler`
+- task: `Oxygen recycler diagnostics`
+
+Output behavior:
+
+- citation: `Oxygen Recycler Checks`
+- explanation says the task is supported by retrieved guidance
+- no uncertainty warning is shown
+
+### Example 2: Construction task
+
+Input:
+
+- resource: `Habitat Shell`
+- task: `Expansion scaffold inspection`
+
+Output behavior:
+
+- citation: `Construction Zone Safety`
+- explanation is grounded in construction guidance
+- no uncertainty warning is shown
+
+### Example 3: Unknown task
+
+Input:
+
+- resource: `Art Bay`
+- task: `Art mural touch-up`
+
+Output behavior:
+
+- citation: `No matching guidance`
+- explanation says no matching guidance was retrieved
+- uncertainty warning is shown for manual review
+
+## Design Decisions
+
+- I used a **small curated local corpus** so the retrieval behavior is easy to inspect and explain.
+- I kept the inherited scheduler backbone from Module 2 to preserve the connection to the base project.
+- I used **keyword retrieval** instead of embeddings or an external API to keep the system reproducible and lightweight.
+- I used **template-based explanations** so the role of retrieval is visible and predictable.
+
+## Testing Summary
+
+The project currently includes:
+
+- inherited scheduler unit tests in `tests/test_pawpal.py`
+- retrieval-focused tests for matched and unmatched guidance behavior
+- a small scenario runner in `evaluate_planner.py`
+
+Current evaluation result:
+
+- `4/4` evaluation scenarios passed
+
+The current guardrail focus is:
+
+- matched tasks should show the expected citation
+- unmatched tasks should trigger uncertainty warnings
+
+## Reliability And Guardrails
+
+The system currently improves reliability by:
+
+- restricting grounding to the local corpus
+- exposing citations for retrieved guidance
+- warning when no guidance matches
+
+More detail is documented in [guardrails-summary.md](/Users/watney/git/zimmnotes/chat/codepath/ai110/w8/lunahabitat-rag-planner/guardrails-summary.md).
+
+## Limitations
+
+- Retrieval is keyword-based rather than semantic.
+- Explanations are template-driven rather than LLM-generated.
+- The current domain model still uses inherited class names like `Pet`.
+- The corpus is small and curated, so it cannot represent real lunar operations comprehensively.
+
+## Reflection
+
+This project showed that even a lightweight retrieval pipeline can make a planner more transparent and testable. It also highlighted an important tradeoff: simple retrieval is easier to evaluate, but it can miss meaning that a stronger semantic or model-based system might capture.
+
+## Assets And Demo
+
+Place your rendered architecture image and any screenshots in `assets/`.
+
+Before submission, add:
+
+- a rendered architecture diagram image
+- 2 to 3 screenshots or a Loom link
+- a short portfolio-facing summary of what this project demonstrates
