@@ -28,6 +28,12 @@ Run tests with more detail:
 python3 -m pytest -v
 ```
 
+Run the scenario-based retrieval evaluation:
+
+```bash
+python3 evaluate_planner.py
+```
+
 If `pytest` is missing, install it directly:
 
 ```bash
@@ -48,4 +54,5 @@ python3 -m pip install pytest
 
 - run the Streamlit app and verify the new labels look correct
 - confirm the seeded tasks match the lunar habitat theme
-- make sure the repo still has a clean story before adding RAG docs
+- run `python3 evaluate_planner.py` and record the summary for the README
+- make sure the repo still has a clean story before polishing final documentation
