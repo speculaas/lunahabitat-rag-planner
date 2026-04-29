@@ -204,16 +204,15 @@ Caption: The planner retrieves `Construction Zone Safety` for a construction-rel
 
 Caption: When a task does not match the local corpus, the planner returns `No matching guidance` and shows an uncertainty warning for manual review.
 
-![Scenario C screenshot](REPLACE_WITH_GITHUB_IMAGE_URL_FOR_SCENARIO_C)
+<img width="741" height="507" alt="image" src="https://github.com/user-attachments/assets/80f175d9-022f-406e-82b3-3947b2cacc28" />
+<img width="815" height="343" alt="image" src="https://github.com/user-attachments/assets/6850b769-62c4-4d4a-8ef0-f042fea90584" />
+<img width="824" height="379" alt="image" src="https://github.com/user-attachments/assets/8d417dd6-f252-4395-9e37-dd4627b5e8f3" />
+<img width="770" height="369" alt="image" src="https://github.com/user-attachments/assets/a2f3559c-2538-4d53-b2e1-4d089320e2aa" />
+
 
 **4. Evaluation script result**
 
 Caption: The scenario-based evaluator reports `4/4` cases passed, covering guidance matches and the missing-guidance guardrail.
 
-![Evaluation screenshot](REPLACE_WITH_GITHUB_IMAGE_URL_FOR_EVALUATION)
+<img width="517" height="363" alt="image" src="https://github.com/user-attachments/assets/ad0c3291-d6bc-45cc-9075-8b8abc9c4c52" />
 
-Before submission, add or confirm:
-
-- a rendered architecture diagram image
-- 2 to 3 screenshots or a Loom link
-- a short portfolio-facing summary of what this project demonstrates
