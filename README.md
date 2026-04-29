@@ -180,7 +180,35 @@ This project showed that even a lightweight retrieval pipeline can make a planne
 
 Place your rendered architecture image and any screenshots in `assets/`.
 
-Before submission, add:
+### Screenshot Placeholders
+
+Replace the placeholder URLs below with your uploaded GitHub image links or screenshot asset paths.
+
+**1. Scenario A: Oxygen guidance match**
+
+Caption: The planner retrieves `Oxygen Recycler Checks` for a life-support task and produces a citation-backed explanation without an uncertainty warning.
+
+![Scenario A screenshot](REPLACE_WITH_GITHUB_IMAGE_URL_FOR_SCENARIO_A)
+
+**2. Scenario B: Construction guidance match**
+
+Caption: The planner retrieves `Construction Zone Safety` for a construction-related task, showing that different task types pull different supporting documents.
+
+![Scenario B screenshot](REPLACE_WITH_GITHUB_IMAGE_URL_FOR_SCENARIO_B)
+
+**3. Scenario C: Uncertainty guardrail**
+
+Caption: When a task does not match the local corpus, the planner returns `No matching guidance` and shows an uncertainty warning for manual review.
+
+![Scenario C screenshot](REPLACE_WITH_GITHUB_IMAGE_URL_FOR_SCENARIO_C)
+
+**4. Evaluation script result**
+
+Caption: The scenario-based evaluator reports `4/4` cases passed, covering guidance matches and the missing-guidance guardrail.
+
+![Evaluation screenshot](REPLACE_WITH_GITHUB_IMAGE_URL_FOR_EVALUATION)
+
+Before submission, add or confirm:
 
 - a rendered architecture diagram image
 - 2 to 3 screenshots or a Loom link
